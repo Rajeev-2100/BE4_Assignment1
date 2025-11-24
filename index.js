@@ -118,8 +118,27 @@ app.get('/books/genre/:genre', async (req, res) => {
     }
 })
 
+async function getAllBookDetailReleasedYear(year){
+    try {
+        const book = await Book.findOne({publishedYear: year})
+        return book 
+    } catch (error) {
+        throw error
+    }
+}
 
+app.get('/books/publishedYear/:year', async (req,res) => {
+    try {
+        const data = await getAllBookDetailReleasedYear(req.params.year)
+        if(!data){
+            res.status(400).json({error: 'Book not found'})
+        }
 
+        res.status(200).json({message: 'Book Data:', book: data})
+    } catch (error) {
+        res.status(500).json({error: 'Failed to fetch Data'})
+    }
+})
 
 const PORT = 3000
 app.listen(PORT, () => {
