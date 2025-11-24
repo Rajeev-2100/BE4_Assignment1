@@ -96,6 +96,31 @@ app.get('/books/author/:authorName', async (req,res) => {
     }
 })
 
+async function getBooksByGenre(genre) {
+    try {
+        return await Book.find({ genre: genre })
+    } catch (error) {
+        throw error
+    }
+}
+
+app.get('/books/genre/:genre', async (req, res) => {
+    try {
+       const data = await getBooksByGenre(req.params.genre)
+       
+       if(!data){
+        res.status(404).json({error: 'No book found'})
+       }
+       return res.status(200).json({message: 'Book Data:', book: data})
+
+    } catch (error) {
+        return res.status(500).json({error: "Failed to fetch books by genre"})
+    }
+})
+
+
+
+
 const PORT = 3000
 app.listen(PORT, () => {
     console.log("Server running on", PORT)
