@@ -71,6 +71,30 @@ app.get('/books/title/:bookTitle', async (req,res) => {
     }
 })
 
+async function getBookDetailsByAuthor(authorName) {
+    try {
+        return await Book.find({ author: authorName })
+    } catch (error) {
+        throw error
+    }
+}
+
+app.get('/books/author/:authorName', async (req,res) => {
+    try {
+        const data = await getBookDetailsByAuthor(req.params.authorName)
+
+        if (!data) {
+            return res.status(404).json({ error: "Book data not found" })
+        }
+        return res.status(200).json({ 
+            message: "Book data:",  
+            book: data 
+        })
+
+    } catch (error) {
+        return res.status(500).json({ error: 'Failed to fetch book Data' })
+    }
+})
 
 const PORT = 3000
 app.listen(PORT, () => {
