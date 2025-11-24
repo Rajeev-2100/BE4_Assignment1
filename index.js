@@ -27,6 +27,25 @@ app.post('/books', async (req,res) => {
     }
 })
 
+async function getAllBooksData(){
+    try {
+        const books = Book.find()
+        return books
+    } catch (error) {
+        throw error
+    }
+}
+
+app.get('/books', async (req,res) => {
+    try {
+        const books = await getAllBooksData()
+        res.status(201).json({message: 'Book Data is this', book: books})
+    } catch (error) {
+        res.status(404).json({error: 'Failed to get All Book Data'})
+    }
+} )
+
+
 const PORT = 3000
 app.listen(PORT, () => {
     console.log("Server running on", PORT)
