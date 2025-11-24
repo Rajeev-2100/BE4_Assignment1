@@ -23,7 +23,7 @@ app.post('/books', async (req,res) => {
         const books = await createNewBook(req.body)
         res.status(201).json(books)
     } catch (error) {
-        res.status(404).json({error: 'Added to failed book data'})
+        res.status(500).json({error: 'Added to failed book data'})
     }
 })
 
@@ -41,9 +41,35 @@ app.get('/books', async (req,res) => {
         const books = await getAllBooksData()
         res.status(201).json({message: 'Book Data is this', book: books})
     } catch (error) {
-        res.status(404).json({error: 'Failed to get All Book Data'})
+        res.status(500).json({error: 'Failed to get All Book Data'})
     }
 } )
+
+async function getBookDetailByTitle(bookTitle){
+    try {
+        const books = await Book.findOne({ title: bookTitle })
+        return books
+    } catch (error) {
+        throw error
+    }
+}
+
+app.get('/books/title/:bookTitle', async (req,res) => {
+    try {
+        const data = await getBookDetailByTitle(req.params.bookTitle)
+
+        if (!data) {
+            return res.status(404).json({ error: "Book data not found" })
+        }
+        return res.status(200).json({ 
+            message: "Book data is this:",  
+            book: data 
+        })
+
+    } catch (error) {
+        return res.status(500).json({ error: 'Failed to fetch book Data' })
+    }
+})
 
 
 const PORT = 3000
