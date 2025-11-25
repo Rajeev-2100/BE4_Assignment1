@@ -140,6 +140,30 @@ app.get('/books/publishedYear/:year', async (req,res) => {
     }
 })
 
+async function updateBookRating(bookId, dataToUpdate) {
+    try {
+        const book = await Book.findByIdAndUpdate(bookId, dataToUpdate, {new: true})
+        return book 
+    } catch (error) {
+        throw error
+    }
+}
+
+app.post('/books/:bookId', async (req,res) => {
+    try {
+        const updateBook = await updateBookRating(req.params.bookId, req.body)
+       if(!updateBook){
+           res.status(404).json({ error: "Book not found" })
+    }else{
+            res.status(200).json({ message: "Book update successfully", book: updateBook })
+        }
+    } catch (error) {
+        res.status(500).json({error: 'Failed to fetch book data'})
+    }
+})
+
+
+
 const PORT = 3000
 app.listen(PORT, () => {
     console.log("Server running on", PORT)
