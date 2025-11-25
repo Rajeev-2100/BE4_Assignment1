@@ -162,6 +162,27 @@ app.post('/books/:bookId', async (req,res) => {
     }
 })
 
+async function updateBookRatingByTitle(bookTitle, dataToUpdate){
+    try {
+        const book = await Book.findOneAndUpdate({title: bookTitle}, dataToUpdate, {new: true})
+        return book   
+    } catch (error) {
+        throw error
+    }
+}
+
+app.post('/books/title/:bookTitle', async (req,res) => {
+    try {
+        const updateBook = await updateBookRatingByTitle(req.params.bookTitle, req.body)
+        if(!updateBook){
+            res.status(404).json({error: 'Book Data not found'})
+        }
+
+        res.status(200).json({message: 'Book Data udpate Successfully', book: updateBook})
+    } catch (error) {
+        res.status(500).json({error: 'Failed to fetch Book Data'})
+    }
+})
 
 
 const PORT = 3000
