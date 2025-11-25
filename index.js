@@ -184,6 +184,27 @@ app.post('/books/title/:bookTitle', async (req,res) => {
     }
 })
 
+async function deleteBookByBookId(bookId) {
+    try {
+        const book = await Book.findByIdAndDelete({_id: bookId})
+        return book
+    } catch (error) {
+        throw error
+    }
+}
+
+app.delete('/books/:bookId', async (req,res) => {
+    try {
+        const deleteBook = await deleteBookByBookId(req.params.bookId)
+        if(!deleteBook){
+            res.status(404).json({error: 'Bookid not found'})
+            console.error(error.message)
+        }
+        res.status(200).json({message: 'Book data delete successfully', book: deleteBook})
+    } catch (error) {
+        res.status(500).json({error : 'Failed to fetch Book Data'})
+    }
+})
 
 const PORT = 3000
 app.listen(PORT, () => {
