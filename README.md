@@ -141,7 +141,7 @@ npm install
 ### 4. Start Server
 
 ```bash
-node server.js
+node index.js
 ```
 
 or
